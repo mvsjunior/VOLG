@@ -4,8 +4,9 @@
     "autoload": {
         "psr-4": {
             "Mauro\\Volg\\": "src/",
-            "App\\": "src/app/",
-            "Modules\\": "src/modules/"
+            "App\\": "src/App/",
+            "Modules\\": "src/Modules/",
+            "Core\\": "src/Core/"
         }
     },
     "authors": [
