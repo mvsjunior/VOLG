@@ -3,10 +3,8 @@
     "description": "Framework PHP",
     "autoload": {
         "psr-4": {
-            "Mauro\\Volg\\": "src/",
-            "App\\": "src/App/",
-            "Modules\\": "src/Modules/",
-            "Core\\": "src/Core/"
+            "Volg\\": "src/",
+            "App\\": "src/App/"
         }
     },
     "authors": [
