@@ -1,7 +1,20 @@
 <?php
 
+use Volg\Core\Db\ConnectionManager;
+
 $webRouter = \Volg\Core\Http\RouterManager::getInstance();
 
 $webRouter->get("/", function(){
-    print_r(parse_ini_file(__DIR__ . "/../Config/config.ini"));
+    
+    $pdo = ConnectionManager::getConn();
+
+    $sql  = "SELECT * FROM users;";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    $result = $stmt->fetchObject();
+
+    echo '<pre>';
+    print_r($result);
+
 });
