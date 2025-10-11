@@ -3,19 +3,35 @@
 namespace Volg\Core\Http;
 
 use Exception;
+use Psr\Container\ContainerInterface;
 use Volg\Core\ConfigManager;
 
 class Router
 {
     protected array $routes   = [];
     protected array $notFound = [];
-    protected array $routersDir = [];
+    public array $routersDir = [];
+    protected ?ContainerInterface $container = null;
+
+    public function __construct(){
+        
+        $this->routersDir = parse_ini_file(BASE_PATH . "/Config/config.ini")['routes_dir'];
+    }
+
+    public function setContainer(ContainerInterface $container): void {
+        $this->container = $container;
+    }
+
+    public function getContainer(): ?ContainerInterface
+    {
+        return $this->container;
+    }
 
     public function get(string $uri = '', mixed $callable = [], $middleware = null)
     {
         if(is_array($callable)){
-            $class  = isset($classAndMethod[0]) ? $classAndMethod[0] : '';
-            $method = isset($classAndMethod[1]) ? $classAndMethod[1] : '';
+            $class  = isset($callable[0]) ? $callable[0] : '';
+            $method = isset($callable[1]) ? $callable[1] : '';
             $callable = [$class, $method];
         }
 
@@ -41,14 +57,6 @@ class Router
 
     public function dispatch()
     {
-        $numberOfFileRoutes = sizeof($this->routersDir);
-
-        if($numberOfFileRoutes){
-            for($loopCounter = 0; $loopCounter < $numberOfFileRoutes; $loopCounter++){
-                $this->loadFileRouter($this->routersDir[$loopCounter]);
-            }
-        }
-
         $pathInfo       = isset($_SERVER["REQUEST_URI"]) ? filter_var($_SERVER["REQUEST_URI"], FILTER_SANITIZE_URL) : '/';
         $pathInfo       = strtok($pathInfo, '?'); // Remove a query string, se existir
         $requestMethod  = filter_var($_SERVER["REQUEST_METHOD"], FILTER_DEFAULT);
@@ -84,14 +92,14 @@ class Router
                     echo "O método da classe do middleware não é executável.";
                 }
 
-                call_user_func([new $middlewareClass,$middlewareMethod]);
+                call_user_func([new $middlewareClass,$middlewareMethod],[$this->container]);
             }else{
                 if(!is_callable($rotas[$pathInfo][$requestMethod]['middleware']))
                 {
                     echo "O método da classe do middleware não é executável.";
                 }
 
-                call_user_func($rotas[$pathInfo][$requestMethod]['middleware']);
+                call_user_func($rotas[$pathInfo][$requestMethod]['middleware'], [$this->container]);
             }
         }
         // <<< Middleware
@@ -105,7 +113,6 @@ class Router
 
         if(is_array($rotas[$pathInfo][$requestMethod]["callable"])){
             $class  = isset($rotas[$pathInfo][$requestMethod]["callable"][0]) ? $rotas[$pathInfo][$requestMethod]["callable"][0] : '';
-    
             if(!class_exists($class))
             {
                 echo "Classe não existe";
@@ -114,9 +121,9 @@ class Router
     
             $method = isset($rotas[$pathInfo][$requestMethod]["callable"][1]) ? $rotas[$pathInfo][$requestMethod]["callable"][1] : '';
     
-            if(is_callable([new $class, $method]))
+            if(is_callable([new $class($this->container), $method]))
             {
-                call_user_func([new $class, $method]);
+                call_user_func([new $class($this->container), $method]);
             }
         }else{
             if(is_callable($rotas[$pathInfo][$requestMethod]["callable"])){

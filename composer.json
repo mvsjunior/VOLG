@@ -4,7 +4,8 @@
     "autoload": {
         "psr-4": {
             "Volg\\": "src/",
-            "App\\": "src/App/"
+            "App\\": "src/App/",
+            "Core\\": "src/Core"
         }
     },
     "authors": [
@@ -13,5 +14,8 @@
             "email": "mauro.emc@outlook.com"
         }
     ],
-    "require": {}
+    "require": {
+        "laminas/laminas-db": "^2.20",
+        "php-di/php-di": "^7.1"
+    }
 }
