@@ -3,9 +3,9 @@
     "description": "Framework PHP",
     "autoload": {
         "psr-4": {
-            "Volg\\": "src/",
-            "App\\": "src/App/",
-            "Core\\": "src/Core"
+            "Volg\\": "",
+            "App\\": "App/",
+            "Core\\": "Core"
         }
     },
     "authors": [
@@ -16,6 +16,7 @@
     ],
     "require": {
         "laminas/laminas-db": "^2.20",
-        "php-di/php-di": "^7.1"
+        "php-di/php-di": "^7.1",
+        "laminas/laminas-paginator": "^2.19"
     }
 }

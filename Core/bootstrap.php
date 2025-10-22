@@ -3,7 +3,7 @@
 session_start();
 
 /** Carregando o autoload */
-include_once(__DIR__ . "/../../vendor/autoload.php");
+include_once(__DIR__ . "/../vendor/autoload.php");
 define('BASE_PATH', dirname(dirname(__FILE__)));
 
 use DI\ContainerBuilder;
@@ -20,8 +20,8 @@ $builder->addDefinitions(require_once(BASE_PATH . '/Config/container.php'));
 $container = $builder->build();
 
 /** Iniciando o motor de rotas */
-$router = $container->get(\Volg\Core\Http\Router::class);
-$router->setContainer($container);
+$router = $container->get('Router');
+
 // Carrega as rotas em arquivos diferentes
 $numberOfFileRoutes = sizeof($router->routersDir);
 
