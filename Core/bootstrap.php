@@ -18,17 +18,3 @@ $builder = new ContainerBuilder();
 $builder->addDefinitions(require_once(BASE_PATH . '/Config/container.php'));
 
 $container = $builder->build();
-
-/** Iniciando o motor de rotas */
-$router = $container->get('Router');
-
-// Carrega as rotas em arquivos diferentes
-$numberOfFileRoutes = sizeof($router->routersDir);
-
-if($numberOfFileRoutes){
-    for($loopCounter = 0; $loopCounter < $numberOfFileRoutes; $loopCounter++){
-        include_once(BASE_PATH . "/" . $router->routersDir[$loopCounter]);
-    }
-}
-
-$router->dispatch();
